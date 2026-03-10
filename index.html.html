@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>Bake From Heart</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Sarabun:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #faf5ef;
+      --surface: #fff9f3;
+      --surface2: #f5ede3;
+      --border: #e8d8c8;
+      --border-light: #f0e4d6;
+      --rose: #c8705a;
+      --rose-light: #e8a090;
+      --rose-dark: #9e4e3a;
+      --cocoa: #2e1f16;
+      --cocoa-mid: #5c3d2e;
+      --cocoa-light: #8a6658;
+      --cream: #fdf8f2;
+      --gold: #b8903c;
+      --sage: #7a9e76;
+      --sage-light: #c8ddc6;
+      --text: #2e1f16;
+      --text-mid: #7a5c50;
+      --text-soft: #a88a7e;
+      --income: #4a8a44;
+      --income-bg: #eef6ec;
+      --expense: #b84040;
+      --expense-bg: #fceaea;
+      --shadow-sm: 0 1px 6px rgba(46,31,22,0.07);
+      --shadow: 0 4px 20px rgba(46,31,22,0.10);
+      --shadow-lg: 0 8px 40px rgba(46,31,22,0.13);
+      --r: 14px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      font-family: 'Sarabun', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overscroll-behavior: none;
+    }
+
+    /* ── HEADER ── */
+    .header {
+      background: var(--cocoa);
+      padding: 0 0 0;
+      position: relative;
+      overflow: hidden;
+    }
+    .header-bg {
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 80% 20%, rgba(200,112,90,0.18) 0%, transparent 60%),
+                  radial-gradient(ellipse at 10% 80%, rgba(184,144,60,0.12) 0%, transparent 50%);
+    }
+    .header-content {
+      position: relative;
+      padding: 24px 20px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .header-left { display: flex; align-items: center; gap: 12px; }
+    .header-icon {
+      width: 42px; height: 42px;
+      background: rgba(253,248,242,0.1);
+      border: 1px solid rgba(253,248,242,0.15);
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
+    }
+    .header-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: #fdf8f2;
+      letter-spacing: 0.3px;
+      line-height: 1.2;
+    }
+    .header-sub {
+      font-size: 11px;
+      color: rgba(253,248,242,0.5);
+      font-weight: 300;
+      margin-top: 1px;
+    }
+    .conn-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: #666;
+      transition: background 0.3s;
+    }
+    .conn-dot.on { background: #6dbf67; box-shadow: 0 0 6px rgba(109,191,103,0.6); }
+    .conn-dot.off { background: #e06060; }
+
+    /* ── TABS ── */
+    .tabs {
+      display: flex;
+      background: var(--cocoa);
+      border-top: 1px solid rgba(255,255,255,0.06);
+      position: sticky; top: 0; z-index: 20;
+    }
+    .tab {
+      flex: 1; padding: 13px 4px 11px;
+      background: transparent; border: none;
+      font-family: 'Sarabun', sans-serif;
+      font-size: 11px; font-weight: 500;
+      color: rgba(253,248,242,0.45);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+      display: flex; flex-direction: column; align-items: center; gap: 3px;
+    }
+    .tab .tab-icon { font-size: 17px; }
+    .tab.active { color: var(--rose-light); border-bottom-color: var(--rose); }
+
+    /* ── CONTAINER ── */
+    .container { max-width: 480px; margin: 0 auto; padding: 18px 14px 40px; }
+
+    /* ── SECTION ── */
+    .section { display: none; animation: fadeUp 0.25s ease; }
+    .section.active { display: block; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── CARD ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      padding: 18px;
+      margin-bottom: 14px;
+      box-shadow: var(--shadow-sm);
+    }
+    .card-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 17px; font-weight: 600;
+      color: var(--cocoa);
+      margin-bottom: 16px;
+      display: flex; align-items: center; gap: 8px;
+    }
+
+    /* ── FORM ── */
+    .fg { margin-bottom: 13px; }
+    label {
+      display: block;
+      font-size: 11px; font-weight: 600;
+      color: var(--text-soft);
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    input, select {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      font-family: 'Sarabun', sans-serif;
+      font-size: 15px; color: var(--text);
+      background: var(--cream);
+      -webkit-appearance: none; appearance: none;
+      transition: border-color 0.18s, box-shadow 0.18s;
+    }
+    select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23a88a7e' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 13px center;
+      padding-right: 36px;
+    }
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--rose);
+      box-shadow: 0 0 0 3px rgba(200,112,90,0.12);
+    }
+    input[type="number"] { -moz-appearance: textfield; }
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
+
+    /* type toggle */
+    .type-row { display: flex; gap: 8px; }
+    .type-btn {
+      flex: 1; padding: 11px 8px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      background: var(--cream);
+      font-family: 'Sarabun', sans-serif;
+      font-size: 14px; font-weight: 500;
+      color: var(--text-soft);
+      cursor: pointer;
+      transition: all 0.18s;
+    }
+    .type-btn.income.sel { background: var(--income-bg); border-color: var(--sage); color: var(--income); font-weight: 600; }
+    .type-btn.expense.sel { background: var(--expense-bg); border-color: #d07070; color: var(--expense); font-weight: 600; }
+
+    /* submit */
+    .btn-submit {
+      width: 100%; padding: 15px;
+      background: var(--cocoa); color: var(--cream);
+      border: none; border-radius: 12px;
+      font-family: 'Sarabun', sans-serif;
+      font-size: 15px; font-weight: 600;
+      cursor: pointer; margin-top: 4px;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      transition: all 0.18s;
+      box-shadow: 0 3px 12px rgba(46,31,22,0.2);
+    }
+    .btn-submit:hover:not(:disabled) { background: var(--cocoa-mid); transform: translateY(-1px); box-shadow: 0 5px 18px rgba(46,31,22,0.25); }
+    .btn-submit:active:not(:disabled) { transform: translateY(0); }
+    .btn-submit:disabled { background: #bbb; cursor: not-allowed; box-shadow: none; }
+
+    /* ── PERIOD ── */
+    .period-row { display: flex; gap: 6px; margin-bottom: 14px; }
+    .period-btn {
+      flex: 1; padding: 9px 4px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px; background: var(--surface);
+      font-family: 'Sarabun', sans-serif;
+      font-size: 12px; font-weight: 500;
+      color: var(--text-soft); cursor: pointer;
+      transition: all 0.18s;
+    }
+    .period-btn.active { background: var(--cocoa); border-color: var(--cocoa); color: var(--cream); font-weight: 600; }
+
+    /* ── SUMMARY ── */
+    .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+    .sum-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      text-align: center;
+    }
+    .sum-card.full { grid-column: 1/-1; }
+    .sum-label { font-size: 10px; font-weight: 600; color: var(--text-soft); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; }
+    .sum-val {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px; font-weight: 700;
+    }
+    .sum-val.inc { color: var(--income); }
+    .sum-val.exp { color: var(--expense); }
+    .sum-val.pft { color: var(--cocoa); }
+    .sum-val.pos { color: var(--income); }
+    .sum-val.neg { color: var(--expense); }
+
+    /* ── LIST ── */
+    .txn-list { display: flex; flex-direction: column; gap: 8px; }
+    .txn {
+      display: flex; align-items: center; gap: 11px;
+      background: var(--surface); border: 1px solid var(--border-light);
+      border-radius: 11px; padding: 12px 13px;
+      animation: fadeUp 0.2s ease;
+    }
+    .txn-bar { width: 3px; border-radius: 3px; align-self: stretch; flex-shrink: 0; }
+    .txn-bar.inc { background: var(--sage); }
+    .txn-bar.exp { background: var(--rose); }
+    .txn-info { flex: 1; min-width: 0; }
+    .txn-name { font-size: 14px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .txn-meta { font-size: 11px; color: var(--text-soft); margin-top: 2px; }
+    .txn-amt { font-family: 'Cormorant Garamond', serif; font-size: 16px; font-weight: 700; flex-shrink: 0; }
+    .txn-amt.inc { color: var(--income); }
+    .txn-amt.exp { color: var(--expense); }
+
+    .empty {
+      text-align: center; padding: 36px 20px;
+      color: var(--text-soft);
+    }
+    .empty .e-icon { font-size: 32px; opacity: 0.35; margin-bottom: 8px; }
+    .empty p { font-size: 13px; }
+
+    /* ── LOADING ── */
+    .loading {
+      text-align: center; padding: 28px;
+      color: var(--text-soft); font-size: 13px;
+    }
+    .spinner {
+      display: inline-block; width: 20px; height: 20px;
+      border: 2px solid var(--border);
+      border-top-color: var(--rose);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      margin-bottom: 8px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── SETUP ── */
+    .step { display: flex; gap: 13px; margin-bottom: 18px; }
+    .step-n {
+      width: 26px; height: 26px; border-radius: 50%;
+      background: var(--rose); color: white;
+      font-size: 12px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; margin-top: 1px;
+    }
+    .step-body { flex: 1; }
+    .step-t { font-size: 14px; font-weight: 600; color: var(--cocoa); margin-bottom: 4px; }
+    .step-d { font-size: 13px; color: var(--text-mid); line-height: 1.65; }
+    .code-block {
+      background: var(--cocoa); color: #f0e6d3;
+      padding: 12px 14px; border-radius: 9px;
+      font-size: 11.5px; font-family: monospace;
+      line-height: 1.75; white-space: pre-wrap;
+      word-break: break-all; margin-top: 9px;
+    }
+    .btn-copy {
+      display: inline-flex; align-items: center; gap: 4px;
+      margin-top: 7px; padding: 6px 13px;
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 6px; font-family: 'Sarabun', sans-serif;
+      font-size: 12px; color: var(--rose-dark); font-weight: 600;
+      cursor: pointer; transition: background 0.15s;
+    }
+    .btn-copy:hover { background: var(--border); }
+
+    .url-row { display: flex; gap: 8px; }
+    .url-row input { flex: 1; }
+    .btn-save-url {
+      padding: 12px 15px; background: var(--rose); color: white;
+      border: none; border-radius: 10px;
+      font-family: 'Sarabun', sans-serif;
+      font-size: 13px; font-weight: 600;
+      cursor: pointer; white-space: nowrap;
+      transition: background 0.15s;
+    }
+    .btn-save-url:hover { background: var(--rose-dark); }
+
+    .badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 4px 10px; border-radius: 20px;
+      font-size: 12px; font-weight: 600;
+    }
+    .badge.on { background: var(--income-bg); color: var(--income); }
+    .badge.off { background: var(--expense-bg); color: var(--expense); }
+    .badge.none { background: var(--surface2); color: var(--text-soft); }
+
+    .divider { height: 1px; background: var(--border); margin: 14px 0; }
+    .section-label {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 16px; font-weight: 600;
+      color: var(--cocoa); margin-bottom: 12px;
+    }
+
+    /* ── TOAST ── */
+    .toast {
+      position: fixed; bottom: 28px; left: 50%;
+      transform: translateX(-50%) translateY(90px);
+      background: var(--cocoa); color: var(--cream);
+      padding: 11px 22px; border-radius: 30px;
+      font-size: 13px; font-weight: 500;
+      box-shadow: var(--shadow-lg);
+      transition: transform 0.32s cubic-bezier(0.34,1.56,0.64,1);
+      z-index: 999; white-space: nowrap; pointer-events: none;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+    .toast.ok { background: #3a7a34; }
+    .toast.err { background: var(--expense); }
+
+    /* ── REFRESH ── */
+    .refresh-row {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .btn-refresh {
+      padding: 7px 13px; background: var(--surface);
+      border: 1.5px solid var(--border); border-radius: 8px;
+      font-family: 'Sarabun', sans-serif;
+      font-size: 12px; font-weight: 600;
+      color: var(--cocoa-light); cursor: pointer;
+      display: flex; align-items: center; gap: 5px;
+      transition: all 0.15s;
+    }
+    .btn-refresh:hover { border-color: var(--rose); color: var(--rose-dark); }
+    .btn-refresh.spinning .ri { animation: spin 0.7s linear infinite; }
+    .ri { display: inline-block; }
+    .last-sync { font-size: 11px; color: var(--text-soft); }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-bg"></div>
+  <div class="header-content">
+    <div class="header-left">
+      <div class="header-icon">🧁</div>
+      <div>
+        <div class="header-title">Bake From Heart</div>
+        <div class="header-sub">บันทึกรายรับ-รายจ่าย</div>
+      </div>
+    </div>
+    <div class="conn-dot" id="conn-dot" title="สถานะการเชื่อมต่อ"></div>
+  </div>
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('form',this)">
+      <span class="tab-icon">📝</span>บันทึก
+    </button>
+    <button class="tab" onclick="switchTab('history',this)">
+      <span class="tab-icon">📋</span>ประวัติ
+    </button>
+    <button class="tab" onclick="switchTab('setup',this)">
+      <span class="tab-icon">⚙️</span>ตั้งค่า
+    </button>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- ── FORM ── -->
+  <div class="section active" id="sec-form">
+    <div class="card">
+      <div class="card-title">✨ เพิ่มรายการใหม่</div>
+
+      <div class="fg">
+        <label>ประเภท</label>
+        <div class="type-row">
+          <button class="type-btn income sel" id="btn-inc" onclick="setType('income')">💚 รายรับ</button>
+          <button class="type-btn expense" id="btn-exp" onclick="setType('expense')">🔴 รายจ่าย</button>
+        </div>
+      </div>
+
+      <div class="fg">
+        <label>รายละเอียด</label>
+        <input id="f-detail" type="text" placeholder="เช่น เค้กช็อคโกแลต / ค่าเนย ค่ากล่อง…" />
+      </div>
+
+      <div class="fg">
+        <label>จำนวนเงิน (บาท)</label>
+        <input id="f-amount" type="number" placeholder="0.00" min="0" step="0.01" inputmode="decimal" />
+      </div>
+
+      <div class="fg">
+        <label>ช่องทาง</label>
+        <select id="f-channel">
+          <option value="">— เลือกช่องทาง —</option>
+          <option>🛵 LINE MAN</option>
+          <option>🚗 Grab</option>
+          <option>🏪 หน้าร้าน</option>
+          <option>🛒 ซื้อวัตถุดิบ</option>
+          <option>💳 ค่า GP</option>
+        </select>
+      </div>
+
+      <button class="btn-submit" id="btn-save" onclick="saveRecord()">
+        <span>💾</span> บันทึกข้อมูล
+      </button>
+    </div>
+
+    <div class="card" style="padding:13px 16px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
+        <span style="font-size:13px;color:var(--text-mid);">Google Sheet</span>
+        <span class="badge none" id="status-badge">ยังไม่ได้ตั้งค่า</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── HISTORY ── -->
+  <div class="section" id="sec-history">
+    <div class="period-row">
+      <button class="period-btn active" onclick="setPeriod('day',this)">วันนี้</button>
+      <button class="period-btn" onclick="setPeriod('month',this)">เดือนนี้</button>
+      <button class="period-btn" onclick="setPeriod('year',this)">ปีนี้</button>
+      <button class="period-btn" onclick="setPeriod('all',this)">ทั้งหมด</button>
+    </div>
+
+    <div class="summary-grid">
+      <div class="sum-card"><div class="sum-label">รายรับรวม</div><div class="sum-val inc" id="s-inc">฿0</div></div>
+      <div class="sum-card"><div class="sum-label">รายจ่ายรวม</div><div class="sum-val exp" id="s-exp">฿0</div></div>
+      <div class="sum-card full"><div class="sum-label">กำไรสุทธิ</div><div class="sum-val pft" id="s-pft">฿0</div></div>
+    </div>
+
+    <div class="card" style="padding:16px;">
+      <div class="refresh-row">
+        <div class="section-label" id="hist-title">รายการวันนี้</div>
+        <button class="btn-refresh" id="btn-refresh" onclick="loadFromSheet()">
+          <span class="ri">🔄</span> รีเฟรช
+        </button>
+      </div>
+      <div class="last-sync" id="last-sync" style="margin-bottom:12px;display:none;"></div>
+      <div id="txn-list"><div class="empty"><div class="e-icon">🧁</div><p>ยังไม่มีรายการ</p></div></div>
+    </div>
+  </div>
+
+  <!-- ── SETUP ── -->
+  <div class="section" id="sec-setup">
+
+    <div class="card">
+      <div class="card-title">🔗 เชื่อมต่อ Google Sheet</div>
+      <div class="fg">
+        <label>Web App URL (จาก Apps Script)</label>
+        <div class="url-row">
+          <input id="inp-url" type="url" placeholder="https://script.google.com/macros/s/…/exec" />
+          <button class="btn-save-url" onclick="saveUrl()">บันทึก</button>
+        </div>
+      </div>
+      <div style="margin-top:4px;display:flex;align-items:center;gap:8px;">
+        <span style="font-size:13px;color:var(--text-mid);">สถานะ:</span>
+        <span class="badge none" id="setup-badge">ยังไม่ได้ตั้งค่า</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📖 วิธีตั้งค่า Apps Script (v2 — รองรับ sync)</div>
+
+      <div class="step">
+        <div class="step-n">1</div>
+        <div class="step-body">
+          <div class="step-t">สร้าง Google Sheet ใหม่</div>
+          <div class="step-d">ไปที่ <strong>sheets.google.com</strong> → สร้าง Spreadsheet ใหม่ → ตั้งชื่อ Sheet แรกว่า <strong>Data</strong></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-n">2</div>
+        <div class="step-body">
+          <div class="step-t">เปิด Apps Script</div>
+          <div class="step-d">เมนูบน <strong>Extensions → Apps Script</strong></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-n">3</div>
+        <div class="step-body">
+          <div class="step-t">วาง Code ด้านล่าง (เวอร์ชัน sync)</div>
+          <div class="step-d">ลบ code เดิมออกทั้งหมด แล้ววาง code นี้แทน:</div>
+          <div class="code-block" id="script-code">const SHEET_NAME = "Data";
+
+function doPost(e) {
+  try {
+    var data = JSON.parse(e.postData.contents);
+    var sheet = SpreadsheetApp.getActiveSpreadsheet()
+                  .getSheetByName(SHEET_NAME);
+
+    if (sheet.getLastRow() === 0) {
+      var h = sheet.getRange(1,1,1,6);
+      sheet.appendRow(["วันที่","เวลา","ประเภท","รายละเอียด","จำนวนเงิน","ช่องทาง"]);
+      h.setFontWeight("bold")
+       .setBackground("#2e1f16")
+       .setFontColor("#fdf8f2");
+    }
+
+    var now = new Date();
+    sheet.appendRow([
+      Utilities.formatDate(now,"Asia/Bangkok","dd/MM/yyyy"),
+      Utilities.formatDate(now,"Asia/Bangkok","HH:mm"),
+      data.type,
+      data.detail,
+      parseFloat(data.amount),
+      data.channel
+    ]);
+
+    return json({status:"ok"});
+  } catch(err) {
+    return json({status:"error",msg:err.toString()});
+  }
+}
+
+function doGet(e) {
+  try {
+    var sheet = SpreadsheetApp.getActiveSpreadsheet()
+                  .getSheetByName(SHEET_NAME);
+    var rows = sheet.getDataRange().getValues();
+    if (rows.length <= 1) return json({status:"ok",data:[]});
+
+    var records = rows.slice(1).map(function(r){
+      return {
+        date: r[0], time: r[1],
+        type: r[2], detail: r[3],
+        amount: r[4], channel: r[5]
+      };
+    }).reverse();
+
+    return json({status:"ok",data:records});
+  } catch(err) {
+    return json({status:"error",msg:err.toString()});
+  }
+}
+
+function json(obj) {
+  return ContentService
+    .createTextOutput(JSON.stringify(obj))
+    .setMimeType(ContentService.MimeType.JSON);
+}</div>
+          <button class="btn-copy" onclick="copyScript()">📋 คัดลอก Code</button>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-n">4</div>
+        <div class="step-body">
+          <div class="step-t">Deploy เป็น Web App</div>
+          <div class="step-d">
+            <strong>Deploy → New deployment</strong><br/>
+            Type: <strong>Web app</strong> &nbsp;|&nbsp; Execute as: <strong>Me</strong><br/>
+            Who has access: <strong>Anyone</strong> → กด <strong>Deploy</strong><br/>
+            คัดลอก URL → วางในช่องด้านบน
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-n">5</div>
+        <div class="step-body">
+          <div class="step-t">แชร์แอพให้แฟน</div>
+          <div class="step-d">ส่งไฟล์ .html และ URL เดิมให้แฟน → ให้กรอก URL เดียวกันในแท็บตั้งค่า → ข้อมูลจะรวมใน Sheet เดียวกันและ sync ข้ามเครื่องได้เลย 🎉</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── State ──
+let selType = 'income';
+let period = 'day';
+let webhookUrl = localStorage.getItem('bfh_url') || '';
+let allRecords = []; // from Sheet
+let lastSync = null;
+
+// ── Init ──
+(function init() {
+  if (webhookUrl) {
+    document.getElementById('inp-url').value = webhookUrl;
+    setConnected(true);
+  }
+})();
+
+// ── Tabs ──
+function switchTab(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+  document.getElementById('sec-' + id).classList.add('active');
+  btn.classList.add('active');
+  if (id === 'history') loadFromSheet();
+}
+
+// ── Type ──
+function setType(t) {
+  selType = t;
+  document.getElementById('btn-inc').classList.toggle('sel', t === 'income');
+  document.getElementById('btn-exp').classList.toggle('sel', t === 'expense');
+}
+
+// ── Save ──
+async function saveRecord() {
+  const detail = document.getElementById('f-detail').value.trim();
+  const amount = document.getElementById('f-amount').value.trim();
+  const channel = document.getElementById('f-channel').value;
+
+  if (!detail)  { toast('⚠️ กรุณากรอกรายละเอียด','err'); return; }
+  if (!amount || parseFloat(amount) <= 0) { toast('⚠️ กรุณากรอกจำนวนเงิน','err'); return; }
+  if (!channel) { toast('⚠️ กรุณาเลือกช่องทาง','err'); return; }
+
+  const rec = {
+    type: selType === 'income' ? 'รายรับ' : 'รายจ่าย',
+    detail, amount: parseFloat(amount),
+    channel: channel.replace(/^.\s/, '')
+  };
+
+  const btn = document.getElementById('btn-save');
+  btn.disabled = true;
+  btn.innerHTML = '<span>⏳</span> กำลังบันทึก…';
+
+  if (!webhookUrl) {
+    toast('⚠️ ยังไม่ได้ตั้งค่า URL ใน ⚙️ ตั้งค่า','err');
+    btn.disabled = false;
+    btn.innerHTML = '<span>💾</span> บันทึกข้อมูล';
+    return;
+  }
+
+  try {
+    await fetch(webhookUrl, {
+      method: 'POST', mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(rec)
+    });
+    toast('✅ บันทึกสำเร็จ! ข้อมูลส่งไป Google Sheet แล้ว','ok');
+    document.getElementById('f-detail').value = '';
+    document.getElementById('f-amount').value = '';
+    document.getElementById('f-channel').value = '';
+    setType('income');
+  } catch (err) {
+    toast('❌ ส่งข้อมูลไม่สำเร็จ กรุณาตรวจสอบ URL','err');
+  }
+
+  btn.disabled = false;
+  btn.innerHTML = '<span>💾</span> บันทึกข้อมูล';
+}
+
+// ── Load from Sheet (GET) ──
+async function loadFromSheet() {
+  if (!webhookUrl) {
+    renderList([]);
+    return;
+  }
+
+  const listEl = document.getElementById('txn-list');
+  listEl.innerHTML = '<div class="loading"><div class="spinner"></div><div>กำลังโหลดจาก Google Sheet…</div></div>';
+
+  const btn = document.getElementById('btn-refresh');
+  btn.classList.add('spinning');
+
+  try {
+    const res = await fetch(webhookUrl + '?action=get', { method: 'GET' });
+    const json = await res.json();
+
+    if (json.status === 'ok') {
+      allRecords = json.data || [];
+      lastSync = new Date();
+      const syncEl = document.getElementById('last-sync');
+      syncEl.style.display = 'block';
+      syncEl.textContent = 'อัปเดตล่าสุด: ' + lastSync.toLocaleTimeString('th-TH');
+    } else {
+      toast('⚠️ โหลดข้อมูลไม่สำเร็จ: ' + (json.msg||''),'err');
+    }
+  } catch (err) {
+    toast('❌ เชื่อมต่อ Sheet ไม่ได้ ตรวจสอบ URL','err');
+  }
+
+  btn.classList.remove('spinning');
+  renderList(filterPeriod(allRecords, period));
+}
+
+// ── Filter ──
+function filterPeriod(records, p) {
+  const now = new Date();
+  const thMonth = now.getMonth();
+  const thYear = now.getFullYear();
+
+  return records.filter(r => {
+    if (p === 'all') return true;
+    // date format: dd/MM/yyyy
+    const parts = (r.date || '').split('/');
+    if (parts.length < 3) return false;
+    const d = parseInt(parts[0]), m = parseInt(parts[1])-1, y = parseInt(parts[2]);
+    if (p === 'day') {
+      return d === now.getDate() && m === thMonth && y === thYear;
+    }
+    if (p === 'month') return m === thMonth && y === thYear;
+    if (p === 'year')  return y === thYear;
+    return true;
+  });
+}
+
+// ── Period ──
+function setPeriod(p, btn) {
+  period = p;
+  document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const titles = { day:'รายการวันนี้', month:'รายการเดือนนี้', year:'รายการปีนี้', all:'ทุกรายการ' };
+  document.getElementById('hist-title').textContent = titles[p];
+
+  if (allRecords.length > 0 || lastSync) {
+    renderList(filterPeriod(allRecords, p));
+  } else {
+    loadFromSheet();
+  }
+}
+
+// ── Render ──
+function renderList(records) {
+  const inc = records.filter(r => r.type === 'รายรับ').reduce((s,r) => s + (+r.amount), 0);
+  const exp = records.filter(r => r.type === 'รายจ่าย').reduce((s,r) => s + (+r.amount), 0);
+  const pft = inc - exp;
+
+  document.getElementById('s-inc').textContent = '฿' + fmt(inc);
+  document.getElementById('s-exp').textContent = '฿' + fmt(exp);
+  const pEl = document.getElementById('s-pft');
+  pEl.textContent = (pft >= 0 ? '+' : '') + '฿' + fmt(pft);
+  pEl.className = 'sum-val pft ' + (pft >= 0 ? 'pos' : 'neg');
+
+  const listEl = document.getElementById('txn-list');
+  if (!records.length) {
+    listEl.innerHTML = '<div class="empty"><div class="e-icon">🧁</div><p>ยังไม่มีรายการในช่วงเวลานี้</p></div>';
+    return;
+  }
+
+  listEl.innerHTML = '<div class="txn-list">' + records.map(r => {
+    const isInc = r.type === 'รายรับ';
+    return `<div class="txn">
+      <div class="txn-bar ${isInc?'inc':'exp'}"></div>
+      <div class="txn-info">
+        <div class="txn-name">${r.detail}</div>
+        <div class="txn-meta">${r.channel} · ${r.date} ${r.time}</div>
+      </div>
+      <div class="txn-amt ${isInc?'inc':'exp'}">${isInc?'+':'-'}฿${fmt(+r.amount)}</div>
+    </div>`;
+  }).join('') + '</div>';
+}
+
+// ── URL ──
+function saveUrl() {
+  const url = document.getElementById('inp-url').value.trim();
+  if (!url.startsWith('https://')) { toast('⚠️ URL ไม่ถูกต้อง','err'); return; }
+  webhookUrl = url;
+  localStorage.setItem('bfh_url', url);
+  setConnected(true);
+  toast('✅ บันทึก URL สำเร็จ','ok');
+}
+
+function setConnected(on) {
+  const dot = document.getElementById('conn-dot');
+  const b1 = document.getElementById('status-badge');
+  const b2 = document.getElementById('setup-badge');
+  if (on) {
+    dot.className = 'conn-dot on';
+    [b1,b2].forEach(b => { b.className='badge on'; b.textContent='✅ เชื่อมต่อแล้ว'; });
+  } else {
+    dot.className = 'conn-dot off';
+    [b1,b2].forEach(b => { b.className='badge none'; b.textContent='ยังไม่ได้ตั้งค่า'; });
+  }
+}
+
+// ── Copy ──
+function copyScript() {
+  const code = document.getElementById('script-code').textContent;
+  navigator.clipboard.writeText(code).then(() => toast('📋 คัดลอก Code แล้ว!','ok'));
+}
+
+// ── Toast ──
+function toast(msg, type='') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast ' + type + ' show';
+  setTimeout(() => t.classList.remove('show'), 3200);
+}
+
+// ── Format ──
+function fmt(n) {
+  return n.toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+</script>
+</body>
+</html>
